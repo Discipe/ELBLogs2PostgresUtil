@@ -1,0 +1,41 @@
+.idea/
+.idea
+
+bin/target/
+
+## File-based project format:
+*.iws
+
+/out/
+
+# mpeltonen/sbt-idea plugin
+.idea_modules/
+
+# JIRA plugin
+atlassian-ide-plugin.xml
+
+# Cursive Clojure plugin
+.idea/replstate.xml
+
+# Ruby plugin and RubyMine
+/.rakeTasks
+
+# Crashlytics plugin (for Android Studio and IntelliJ)
+com_crashlytics_export_strings.xml
+crashlytics.properties
+crashlytics-build.properties
+fabric.properties
+
+### Intellij+all Patch ###
+# Ignores the whole idea folder
+# See https://github.com/joeblau/gitignore.io/issues/186 and https://github.com/joeblau/gitignore.io/issues/360
+
+.idea/
+target/
+project/target/
+
+### Scala ###
+*.class
+*.log
+
+# End of https://www.gitignore.io/api/scala,intellij+all
