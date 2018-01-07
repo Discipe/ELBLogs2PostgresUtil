@@ -9,7 +9,6 @@ class LogsParserWorker(file: File, dBAccess: DBAccess, index: Option[Int] = None
   val uid = UUID.randomUUID().toString
   val logger = LoggerFactory.getLogger(this.getClass)
 
-//  val regex = """^([^ ]*) ([^ ]*) ([^ ]*):([0-9]*) ([^ ]*):([0-9]*) ([.0-9]*) ([.0-9]*) ([.0-9]*) (-|[0-9]*) (-|[0-9]*) ([-0-9]*) ([-0-9]*) "([^ ]*) ([^ ]*) (- |[^ ]*)" "(.+)" (.*)""".r
   val regex = """^([^ ]*) ([^ ]*) ([^ ]*) ([^ ]*) ([-.0-9]*) ([-.0-9]*) ([-.0-9]*) (-|[0-9]*) (-|[0-9]*) ([-0-9]*) ([-0-9]*) "([^ ]*) ([^ ]*) (- |[^ ]*)" "(.+)" (.*)""".r
 
   private val fileInfo = {

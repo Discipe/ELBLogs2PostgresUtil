@@ -38,7 +38,7 @@ object ReadableDateOffset extends OffsetProvider {
     val now = LocalDateTime.now()
     //We want to have DateTime encoding with minutes precision:
     //17-Sept-26T14-33
-    now.format(DateTimeFormatter.ofPattern("yy-MMM-dd'T'HH-mm", Locale.US)).toLowerCase //todo remove lowerCase when Anil fixes CBS bug:
+    now.format(DateTimeFormatter.ofPattern("yy-MMM-dd'T'HH-mm", Locale.US)).toLowerCase
   }
 
   override def offset: (Int, Long) = (0, 0L)
@@ -48,8 +48,6 @@ object SQLDateOffset extends OffsetProvider {
 
   override def suffix: String = {
     val now = LocalDateTime.now()
-    //We want to have DateTime encoding with minutes precision:
-    //17-Sept-26T14-33
     now.format(DateTimeFormatter.ofPattern("yy_MMM_dd__HH_mm", Locale.US)).toLowerCase
   }
 
