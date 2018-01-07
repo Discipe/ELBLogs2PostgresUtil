@@ -41,7 +41,7 @@ class DBAccess(user: String, password: String) {
            ReceivedBytes BIGINT,
            SentBytes bigint,
            RequestVerb varchar(50),
-           URL varchar(1024),
+           URL varchar(2048),
            protocol VARCHAR(50),
            userAgent varchar(255),
            ssl varchar(200)

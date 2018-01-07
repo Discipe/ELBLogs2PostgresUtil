@@ -2,6 +2,8 @@ import java.io.File
 
 import org.slf4j.LoggerFactory
 
+import scala.util.Try
+
 object Main {
 
   val logger = LoggerFactory.getLogger(this.getClass)
@@ -11,7 +13,6 @@ object Main {
     val dbuser = args(0)
     val dbpassword = args(1)
     val filePath = args(2)
-
     val dba = new DBAccess(dbuser, dbpassword)
     dba.createTableIfNotExists()
 

@@ -54,7 +54,7 @@ class LogsParserWorker(file: File, dBAccess: DBAccess, index: Option[Int] = None
   def process(): Unit = {
     if (file.isDirectory) {
       logger.debug(s"${file.getPath} is a directory; parsing files in it")
-      val files = file.listFiles().zipWithIndex
+      val files = file.listFiles().sortBy(_.getName).zipWithIndex
       logger.debug(s"Found ${files.length} in the directory")
       files.foreach {
         case (f, i) => new LogsParserWorker(f, dBAccess, Some(i)).process()
