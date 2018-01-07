@@ -21,7 +21,7 @@ class LogsParserWorker(file: File, dBAccess: DBAccess, index: Option[Int] = None
   private def line2entry(l: String): Option[LogEntry] = {
     val matcherOpt = regex.findAllIn(l).matchData.toList match {
       case h :: Nil => Some(h)
-      case Nil => logger.warn(s"Cannot parse line < $l >")
+      case _ => logger.warn(s"Cannot parse line < $l >")
         None
     }
     matcherOpt flatMap { matcher =>

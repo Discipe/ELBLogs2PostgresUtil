@@ -2,11 +2,11 @@ import doobie.imports._
 import cats._, cats.data._, cats.implicits._
 import fs2.interop.cats._
 
-class DBAccess {
+class DBAccess(user: String, password: String) {
 
   ///public
   val xa = DriverManagerTransactor[IOLite](
-    "org.postgresql.Driver", "jdbc:postgresql://localhost:5432/postgres", "postgres", "devenvpass"
+    "org.postgresql.Driver", "jdbc:postgresql://localhost:5432/postgres", user, password
   )
 
   val program2: ConnectionIO[Int] = sql"select 42".query[Int].unique
@@ -25,8 +25,7 @@ class DBAccess {
     task.unsafePerformIO
   }
 
-  def createTable(): Int = {
-    val uniqueName = SQLDateOffset.suffix
+  def createTableIfNotExists(): Int = {
     val free = sql"""
          CREATE TABLE IF NOT EXISTS elb_logs (
            id SERIAL PRIMARY KEY NOT NULL,
