@@ -4,7 +4,7 @@ version := "0.1"
 
 scalaVersion := "2.12.4"
 
-lazy val doobieVersion = "0.4.2"
+lazy val doobieVersion = "0.5.3"
 
 libraryDependencies ++= Seq(
   "ch.qos.logback" % "logback-classic" % "1.1.7",

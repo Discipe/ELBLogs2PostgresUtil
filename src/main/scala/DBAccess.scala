@@ -1,8 +1,14 @@
+import java.time.{ZoneOffset, ZonedDateTime}
+
 import doobie.imports._
-import cats._, cats.data._, cats.implicits._
+import doobie.util.meta.Meta
 import fs2.interop.cats._
 
 class DBAccess(user: String, password: String) {
+
+  import doobie.util.meta.Meta._
+
+  implicit val mm: Meta[java.time.ZonedDateTime] = JavaTimeInstantMeta.xmap(ZonedDateTime.ofInstant(_, ZoneOffset.UTC), _.toInstant)
 
   ///public
   val xa = DriverManagerTransactor[IOLite](
@@ -26,10 +32,11 @@ class DBAccess(user: String, password: String) {
   }
 
   def createTableIfNotExists(): Int = {
+    //datetime varchar(50),
     val free = sql"""
          CREATE TABLE IF NOT EXISTS elb_logs (
            id SERIAL PRIMARY KEY NOT NULL,
-           datetime varchar(50),
+           datetime timestamptz,
            ELBName varchar(50),
            RequestIP varchar(50),
            BackendIP varchar(50),
@@ -51,6 +58,8 @@ class DBAccess(user: String, password: String) {
   }
 
   def insertRow(le: LogEntry) = {
+    val url = le.url.substring(0, 2048)
+    val agent = le.userAgent.substring(0, 255)
     sql"""INSERT INTO public.elb_logs (
       datetime, elbname, requestip, backendip,
       requestprocessingtime, backendprocessingtime, clientresponsetime, elbresponsecode,
@@ -59,18 +68,22 @@ class DBAccess(user: String, password: String) {
       VALUES(
         ${le.dateTime}, ${le.name}, ${le.requestIP}, ${le.backendIP},
         ${le.requestProcessingTime}, ${le.backendProcessingTime}, ${le.clientResponseTime}, ${le.elbResponseCode},
-        ${le.backendResponseCode}, ${le.receivedBytes}, ${le.sentBytes}, ${le.requestVerb}, ${le.url},
+        ${le.backendResponseCode}, ${le.receivedBytes}, ${le.sentBytes}, ${le.requestVerb}, ${url},
         ${le.userAgent}, ${le.ssl}
       );
     """.update
   }
 
   def insertRows(les: List[LogEntry]) = {
-    val sql = "INSERT INTO public.elb_logs (datetime, elbname, requestip, backendip, " +
+    val cropped = les.map(le => le.copy(
+      url = le.url.substring(0, math.min(le.url.length, 2048)),
+      userAgent = le.userAgent.substring(0, math.min(le.userAgent.length, 255)))
+    )
+    val sql = s"INSERT INTO public.elb_logs (datetime, elbname, requestip, backendip, " +
       "requestprocessingtime, backendprocessingtime, clientresponsetime, elbresponsecode, backendresponsecode, " +
       "receivedbytes, sentbytes, requestverb, url, protocol, useragent, ssl) " +
       "VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);"
-    Update[LogEntry](sql).updateMany(les).transact(xa).unsafePerformIO
+    Update[LogEntry](sql).updateMany(cropped).transact(xa).unsafePerformIO
   }
 
 }

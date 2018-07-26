@@ -1,11 +1,13 @@
+import java.time.ZonedDateTime
+
 
 case class LogEntry(
-                     dateTime: String,
+                     dateTime: ZonedDateTime,
                      name: String,
                      requestIP: String,
-//                     requestPort: Int,
+                     //requestPort: Int,
                      backendIP: String,
-//                     backendPort: Int,
+                     //backendPort: Int,
 
                      requestProcessingTime: Double,
                      backendProcessingTime: Double,

@@ -1,4 +1,5 @@
 import java.io.File
+import java.time.ZonedDateTime
 import java.util.UUID
 
 import org.slf4j.LoggerFactory
@@ -34,7 +35,8 @@ class LogsParserWorker(file: File, dBAccess: DBAccess, index: Option[Int] = None
         case datetime :: name :: reqIP :: backIp ::
           reqTime :: backTime :: clientTime :: elbCode :: backCode ::
           rcvBytes :: sentBytes :: reqVerb :: url :: protocol :: ua :: ssl :: Nil => Some(
-          new LogEntry(datetime.trim, name, reqIP, backIp, reqTime.toDouble, backTime.toDouble, clientTime.toDouble,
+          new LogEntry(ZonedDateTime.parse(datetime.trim), //datetime.trim,
+            name, reqIP, backIp, reqTime.toDouble, backTime.toDouble, clientTime.toDouble,
             elbCode, backCode, rcvBytes.toLong, sentBytes.toLong, reqVerb, url, protocol, ua, ssl)
         )
 
