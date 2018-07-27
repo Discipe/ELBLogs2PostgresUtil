@@ -1,8 +1,11 @@
 import java.time.{ZoneOffset, ZonedDateTime}
 
-import doobie.imports._
+import doobie._
+import doobie.implicits._
 import doobie.util.meta.Meta
-import fs2.interop.cats._
+import cats._
+import cats.effect._
+import cats.implicits._
 
 class DBAccess(user: String, password: String) {
 
@@ -11,7 +14,7 @@ class DBAccess(user: String, password: String) {
   implicit val mm: Meta[java.time.ZonedDateTime] = JavaTimeInstantMeta.xmap(ZonedDateTime.ofInstant(_, ZoneOffset.UTC), _.toInstant)
 
   ///public
-  val xa = DriverManagerTransactor[IOLite](
+  val xa = Transactor.fromDriverManager[IO](
     "org.postgresql.Driver", "jdbc:postgresql://localhost:5432/postgres", user, password
   )
 
@@ -23,12 +26,12 @@ class DBAccess(user: String, password: String) {
       b <- sql"select random()".query[Double].unique
     } yield (a, b)
 
-  val task2: IOLite[Int] = program2.transact(xa)
+  val task2: IO[Int] = program2.transact(xa)
 
   val task = program3.transact(xa)
 
-  def calcConst() = {
-    task.unsafePerformIO
+  def calcConst(): (Int, Double) = {
+    task.unsafeRunSync()
   }
 
   def createTableIfNotExists(): Int = {
@@ -54,7 +57,7 @@ class DBAccess(user: String, password: String) {
            ssl varchar(200)
          )
     """.update.run
-    free.transact(xa).unsafePerformIO
+    free.transact(xa).unsafeRunSync()
   }
 
   def insertRow(le: LogEntry) = {
@@ -83,7 +86,7 @@ class DBAccess(user: String, password: String) {
       "requestprocessingtime, backendprocessingtime, clientresponsetime, elbresponsecode, backendresponsecode, " +
       "receivedbytes, sentbytes, requestverb, url, protocol, useragent, ssl) " +
       "VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);"
-    Update[LogEntry](sql).updateMany(cropped).transact(xa).unsafePerformIO
+    Update[LogEntry](sql).updateMany(cropped).transact(xa).unsafeRunSync()
   }
 
 }

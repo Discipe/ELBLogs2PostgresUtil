@@ -18,7 +18,7 @@ libraryDependencies ++= Seq(
   "org.postgresql" % "postgresql" % "42.1.3", //postgres jdbc driver
   "com.github.tminglei" %% "slick-pg" % "0.15.3", //Postgres for slick extension
   "io.monix" %% "monix" % "2.3.0",
-  "org.tpolecat" %% "doobie-core-cats"       % doobieVersion,
-  "org.tpolecat" %% "doobie-postgres-cats"   % doobieVersion,
-  "org.tpolecat" %% "doobie-specs2-cats"     % doobieVersion
+  "org.tpolecat" %% "doobie-core"       % doobieVersion,
+  "org.tpolecat" %% "doobie-postgres"   % doobieVersion,
+  "org.tpolecat" %% "doobie-specs2"     % doobieVersion
 )
